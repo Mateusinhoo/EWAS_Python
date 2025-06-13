@@ -8,7 +8,9 @@ from scipy import stats
 from statsmodels.api import add_constant
 
 
-def run_vectorized(design: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+def run_vectorized(
+    design: np.ndarray, y: np.ndarray
+) -> tuple[np.ndarray, np.ndarray]:
     """Return betas and p-values for multiple CpGs simultaneously."""
     # design: n_samples x 2, with intercept and variable
     x_tx_inv = np.linalg.inv(design.T @ design)
@@ -26,14 +28,20 @@ def run_vectorized(design: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.nd
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Run EWAS analysis using vectorized regression")
+    parser = argparse.ArgumentParser(
+        description="Run EWAS analysis using vectorized regression"
+    )
     parser.add_argument("--pheno", required=True, help="Phenotype file")
     parser.add_argument("--methyl", required=True, help="Methylation matrix")
     parser.add_argument("--assoc", required=True, help="Variable to associate")
     parser.add_argument("--chunk-size", type=int, default=1000)
     parser.add_argument("--out-dir", default="results/")
     parser.add_argument("--out-type", default=".csv")
-    parser.add_argument("--sample-id-col", default="sampleID", help="Sample ID column in phenotype file")
+    parser.add_argument(
+        "--sample-id-col",
+        default="sampleID",
+        help="Sample ID column in phenotype file",
+    )
     args = parser.parse_args()
 
     pheno = pd.read_csv(args.pheno)
@@ -42,7 +50,9 @@ def main() -> None:
     if args.assoc not in pheno.columns:
         raise ValueError(f"Association variable {args.assoc} not found")
     if args.sample_id_col not in pheno.columns:
-        raise ValueError(f"Phenotype file must contain a '{args.sample_id_col}' column")
+        raise ValueError(
+            f"Phenotype file must contain a '{args.sample_id_col}' column"
+        )
 
     sample_ids = pheno[args.sample_id_col].astype(str)
     cols_match = sample_ids.isin(mvals.columns.astype(str)).all()
@@ -51,7 +61,9 @@ def main() -> None:
         mvals = mvals.T
         print("Transposed methylation matrix to match sample orientation")
     elif not cols_match and not rows_match:
-        raise ValueError("Sample IDs do not match methylation matrix dimensions")
+        raise ValueError(
+            "Sample IDs do not match methylation matrix dimensions"
+        )
 
     pheno = pheno.set_index(args.sample_id_col)
     mvals = mvals.loc[:, pheno.index]
@@ -60,7 +72,8 @@ def main() -> None:
 
     results = []
     for start in range(0, mvals.shape[0], args.chunk_size):
-        chunk = mvals.iloc[start : start + args.chunk_size].values.T  # n_samples x chunk_size
+        chunk = mvals.iloc[start : start + args.chunk_size].values.T
+        # n_samples x chunk_size
         betas, pvals = run_vectorized(design, chunk)
         cpgs = mvals.index[start : start + args.chunk_size]
         for beta, pval, cpg in zip(betas, pvals, cpgs):

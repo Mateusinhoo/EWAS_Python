@@ -67,7 +67,9 @@ def main() -> None:
         mvals = mvals.T
         print("Transposed methylation matrix to match sample orientation")
     elif not cols_match and not rows_match:
-        raise ValueError("Sample IDs do not match methylation matrix dimensions")
+        raise ValueError(
+            "Sample IDs do not match methylation matrix dimensions"
+        )
 
     # Merge data
     pheno = pheno.set_index(args.sample_id_col)

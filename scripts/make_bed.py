@@ -10,11 +10,26 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description="Create a BED-style file from EWAS results"
     )
-    parser.add_argument("--results", required=True, help="Path to annotated EWAS results")
-    parser.add_argument("--out-dir", default="results/bed", help="Output directory")
-    parser.add_argument("--assoc", required=True, help="Name of the association variable")
     parser.add_argument(
-        "--p-threshold", type=float, default=1e-5, help="P-value threshold for filtering CpGs"
+        "--results",
+        required=True,
+        help="Path to annotated EWAS results",
+    )
+    parser.add_argument(
+        "--out-dir",
+        default="results/bed",
+        help="Output directory",
+    )
+    parser.add_argument(
+        "--assoc",
+        required=True,
+        help="Name of the association variable",
+    )
+    parser.add_argument(
+        "--p-threshold",
+        type=float,
+        default=1e-5,
+        help="P-value threshold for filtering CpGs",
     )
     args = parser.parse_args()
 
@@ -25,7 +40,9 @@ def main() -> None:
     required_cols = ["CHR", "MAPINFO", "CpG", "pvalue"]
     missing = [col for col in required_cols if col not in df_filtered.columns]
     if missing:
-        raise ValueError(f"Missing required columns in EWAS results: {missing}")
+        raise ValueError(
+            f"Missing required columns in EWAS results: {missing}"
+        )
 
     df_bed = pd.DataFrame(
         {
