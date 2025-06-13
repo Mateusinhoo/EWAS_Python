@@ -6,10 +6,26 @@ perform ordinary least squares regression for each CpG.
 import argparse
 import os
 from concurrent.futures import ProcessPoolExecutor
+from functools import partial
 
 import numpy as np
 import pandas as pd
 from statsmodels.api import OLS, add_constant
+
+
+def analyze_cpg(cpg_id: str, mvals: pd.DataFrame, design_matrix: pd.DataFrame, assoc: str) -> dict:
+    """Return association statistics for a single CpG."""
+
+    y = mvals.loc[cpg_id]
+    try:
+        model = OLS(y, design_matrix).fit()
+        return {
+            "CpG": cpg_id,
+            "beta": model.params[assoc],
+            "pvalue": model.pvalues[assoc],
+        }
+    except Exception:
+        return {"CpG": cpg_id, "beta": np.nan, "pvalue": np.nan}
 
 def main() -> None:
     """Entry point for command line execution."""
@@ -59,28 +75,19 @@ def main() -> None:
 
     design_matrix = add_constant(pheno[[args.assoc]].astype(float))
 
-    # Define analysis function
-    def analyze_cpg(cpg_id):
-        """Return association statistics for a single CpG."""
-
-        y = mvals.loc[cpg_id]
-        try:
-            model = OLS(y, design_matrix).fit()
-            return {
-                "CpG": cpg_id,
-                "beta": model.params[args.assoc],
-                "pvalue": model.pvalues[args.assoc],
-            }
-        except Exception:
-            return {"CpG": cpg_id, "beta": np.nan, "pvalue": np.nan}
-
     # Run analysis in chunks
     results = []
     cpg_list = mvals.index.tolist()
     with ProcessPoolExecutor(max_workers=args.workers) as executor:
         for i in range(0, len(cpg_list), args.chunk_size):
             batch = cpg_list[i : i + args.chunk_size]
-            for res in executor.map(analyze_cpg, batch):
+            func = partial(
+                analyze_cpg,
+                mvals=mvals,
+                design_matrix=design_matrix,
+                assoc=args.assoc,
+            )
+            for res in executor.map(func, batch):
                 results.append(res)
 
     # Save output
