@@ -21,6 +21,11 @@ parser.add_argument("--chunk-size", type=int, default=1000)
 parser.add_argument("--out-dir", default="results/")
 parser.add_argument("--out-type", default=".csv")
 parser.add_argument("--workers", type=int, default=4)
+parser.add_argument(
+    "--sample-id-col",
+    default="sampleID",
+    help="Column name for sample identifiers in the phenotype file",
+)
 args = parser.parse_args()
 
 # Load data
@@ -29,9 +34,15 @@ mvals = pd.read_csv(args.methyl, index_col=0)
 
 assert args.assoc in pheno.columns, f"Association variable {args.assoc} not found"
 
+# Validate sample ID column
+if args.sample_id_col not in pheno.columns:
+    raise ValueError(
+        f"Phenotype file must contain a '{args.sample_id_col}' column"
+    )
+
 # Merge data
-common_samples = pheno["sample_id"].isin(mvals.columns)
-pheno = pheno[common_samples].set_index("sample_id")
+common_samples = pheno[args.sample_id_col].isin(mvals.columns)
+pheno = pheno[common_samples].set_index(args.sample_id_col)
 mvals = mvals[pheno.index]
 
 
