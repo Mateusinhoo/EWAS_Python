@@ -47,8 +47,10 @@ def analyze_cpg(cpg_id):
 results = []
 cpg_list = mvals.index.tolist()
 with ProcessPoolExecutor(max_workers=args.workers) as executor:
-    for res in executor.map(analyze_cpg, cpg_list):
-        results.append(res)
+    for i in range(0, len(cpg_list), args.chunk_size):
+        batch = cpg_list[i:i + args.chunk_size]
+        for res in executor.map(analyze_cpg, batch):
+            results.append(res)
 
 # Save output
 out_df = pd.DataFrame(results)
