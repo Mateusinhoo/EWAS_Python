@@ -24,9 +24,8 @@ args = parser.parse_args()
 # Load EWAS results
 df = pd.read_csv(args.input_file, sep=None, engine="python")
 
-# Load annotation files (assumed to be in annotation_files directory)
+# Load annotation file (assumed to be in annotation_files directory)
 anno_cpg = pd.read_csv("annotation_files/EPIC_hg38.tsv.gz", sep="\t")
-anno_snp = pd.read_csv("annotation_files/EPIC_snp_key.tsv.gz", sep="\t")
 
 # Merge EWAS results with CpG annotations
 annotated = df.merge(anno_cpg, on="CpG", how="left")
