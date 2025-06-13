@@ -1,20 +1,28 @@
-# annotate.py - Python version of annotation.R
+"""Annotate EWAS results with genomic information.
+
+This script mimics the functionality of the original ``annotation.R`` script. It
+reads an EWAS results file, merges the results with CpG annotations and writes a
+new annotated result file.
+"""
 
 import argparse
-import pandas as pd
 import os
+
+import pandas as pd
 
 # Parse arguments
 parser = argparse.ArgumentParser(description="Add annotation data to EWAS results")
 parser.add_argument("--input-file", "-i", required=True, help="EWAS result file (CSV or TSV)")
 parser.add_argument("--out-dir", required=True, help="Directory to save annotated results")
-parser.add_argument("--stratified", choices=["yes", "no"], default="no", help="Was the analysis stratified")
+parser.add_argument(
+    "--stratified", choices=["yes", "no"], default="no", help="Was the analysis stratified"
+)
 parser.add_argument("--assoc", required=True, help="Association variable name")
 parser.add_argument("--out-type", default=".csv", help="Output file extension")
 args = parser.parse_args()
 
 # Load EWAS results
-df = pd.read_csv(args.input_file, sep=None, engine='python')
+df = pd.read_csv(args.input_file, sep=None, engine="python")
 
 # Load annotation files (assumed to be in annotation_files directory)
 anno_cpg = pd.read_csv("annotation_files/EPIC_hg38.tsv.gz", sep="\t")

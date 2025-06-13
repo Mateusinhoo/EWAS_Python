@@ -1,14 +1,15 @@
-# stratify.py - Python version of stratify.R
+"""Split phenotype and methylation data into stratified groups."""
 
 import argparse
-import pandas as pd
 import os
+
+import pandas as pd
 
 # Parse command-line arguments
 parser = argparse.ArgumentParser(description="Stratify phenotype and methylation data")
 parser.add_argument("--pheno", required=True, help="Path to phenotype data")
 parser.add_argument("--methyl", required=True, help="Path to methylation matrix")
-parser.add_argument("--stratify", nargs='+', required=True, help="List of variables to stratify by")
+parser.add_argument("--stratify", nargs="+", required=True, help="List of variables to stratify by")
 parser.add_argument("--out-dir", default="results/stratified")
 args = parser.parse_args()
 
@@ -32,7 +33,9 @@ os.makedirs(args.out_dir, exist_ok=True)
 
 # Split data and write to files
 for group_vals, sub_pheno in groups:
-    group_name = "_".join(str(v) for v in group_vals) if isinstance(group_vals, tuple) else str(group_vals)
+    group_name = (
+        "_".join(str(v) for v in group_vals) if isinstance(group_vals, tuple) else str(group_vals)
+    )
     sub_mvals = mvals.loc[:, sub_pheno.index]
 
     pheno_path = os.path.join(args.out_dir, f"{group_name}_pheno.csv")
