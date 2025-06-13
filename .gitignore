@@ -1,0 +1,4 @@
+output/
+annotation_files/
+*.pyc
+__pycache__/
