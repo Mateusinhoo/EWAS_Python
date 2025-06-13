@@ -15,6 +15,25 @@ It includes scripts for:
 pip install -r requirements.txt
 ```
 
+## CpG Annotation Files
+
+To annotate CpG sites you need annotation tables for the Illumina EPIC array.
+You can download `EPIC.hg38.manifest.tsv.gz` and the accompanying SNP key from
+the [InfiniumAnnotation project](https://zwdzwd.github.io/InfiniumAnnotation/).
+Place the files under a directory named `annotation_files` in the repository
+root and rename them as follows:
+
+```bash
+mkdir -p annotation_files
+curl -L -o annotation_files/EPIC_hg38.tsv.gz \
+  https://zwdzwd.github.io/InfiniumAnnotation/files/EPIC.hg38.manifest.tsv.gz
+curl -L -o annotation_files/EPIC_snp_key.tsv.gz \
+  https://zwdzwd.github.io/InfiniumAnnotation/files/EPIC.hg38.snp.tsv.gz
+```
+
+The scripts will look for these filenames inside `annotation_files/` by
+default.
+
 ## Usage Examples
 
 Assuming your phenotype table (`pheno.csv`) and methylation matrix (`mvals.csv.gz`) are stored in the `data` directory:
@@ -36,7 +55,7 @@ If your phenotype table uses another sample column, specify it with `--sample-id
 python scripts/annotate.py --input-file output/ewas/ewas_results.csv --out-dir output/annotated --assoc BMI --stratified no
 ```
 Use `--anno-file` to provide a different CpG annotation file if needed.
-Annotation files such as `EPIC_hg38.tsv.gz` and `EPIC_snp_key.tsv.gz` are expected inside an `annotation_files` directory.
+Annotation files such as `EPIC_hg38.tsv.gz` and `EPIC_snp_key.tsv.gz` are expected inside an `annotation_files` directory (see [CpG Annotation Files](#cpg-annotation-files) for download instructions).
 
 ### Create a BED file
 ```bash
