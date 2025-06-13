@@ -31,6 +31,15 @@ curl -L -o annotation_files/EPIC_snp_key.tsv.gz \
   https://zwdzwd.github.io/InfiniumAnnotation/files/EPIC.hg38.snp.tsv.gz
 ```
 
+`EPIC.hg38.manifest.tsv.gz` includes a column named `Probe_ID` that needs to be renamed to `CpG` before running `annotate.py`. You can do this with:
+
+```bash
+gunzip -c annotation_files/EPIC_hg38.tsv.gz \
+  | sed '1s/Probe_ID/CpG/' \
+  | gzip > annotation_files/EPIC_hg38.tsv.gz.tmp &&
+mv annotation_files/EPIC_hg38.tsv.gz.tmp annotation_files/EPIC_hg38.tsv.gz
+```
+
 The scripts will look for these filenames inside `annotation_files/` by
 default.
 
