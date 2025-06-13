@@ -2,9 +2,7 @@
 
 import argparse
 import os
-
 import pandas as pd
-
 
 def main() -> None:
     """Entry point for command line usage."""
