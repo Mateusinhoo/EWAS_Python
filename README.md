@@ -25,6 +25,12 @@ python scripts/ewas.py --pheno data/pheno.csv --methyl data/mvals.csv.gz --assoc
 ```
 Use `--sample-id-col` if your phenotype table uses a different column name for sample IDs. The script will automatically transpose the methylation matrix if samples are found on rows.
 
+### Run EWAS (vectorized)
+```bash
+python scripts/ewas_fast.py --pheno data/pheno.csv --methyl data/mvals.csv.gz --assoc BMI --out-dir output/ewas
+```
+This alternative implementation performs the regressions in chunks using NumPy operations to avoid repeatedly copying the design and methylation matrices.
+
 ### Stratify the data
 ```bash
 python scripts/stratify.py --pheno data/pheno.csv --methyl data/mvals.csv.gz --stratify sex re --out-dir output/stratified
