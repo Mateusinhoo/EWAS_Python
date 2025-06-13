@@ -14,9 +14,22 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description="Plot Manhattan and QQ plots from EWAS results"
     )
-    parser.add_argument("--input-file", "-i", required=True, help="Annotated EWAS results file")
-    parser.add_argument("--out-dir", required=True, help="Directory to save plots")
-    parser.add_argument("--assoc", required=True, help="Association variable")
+    parser.add_argument(
+        "--input-file",
+        "-i",
+        required=True,
+        help="Annotated EWAS results file",
+    )
+    parser.add_argument(
+        "--out-dir",
+        required=True,
+        help="Directory to save plots",
+    )
+    parser.add_argument(
+        "--assoc",
+        required=True,
+        help="Association variable",
+    )
     parser.add_argument(
         "--out-type",
         default="html",
@@ -39,7 +52,9 @@ def main() -> None:
 
     df_sorted = df[["pvalue"]].dropna().sort_values("pvalue")
     df_sorted["expected"] = -np.log10(
-        stats.uniform.ppf((np.arange(1, len(df_sorted) + 1)) / (len(df_sorted) + 1))
+        stats.uniform.ppf(
+            (np.arange(1, len(df_sorted) + 1)) / (len(df_sorted) + 1)
+        )
     )
     df_sorted["observed"] = -np.log10(df_sorted["pvalue"].values)
 
@@ -47,7 +62,12 @@ def main() -> None:
 
     fig_qq = go.Figure()
     fig_qq.add_trace(
-        go.Scatter(x=df_sorted["expected"], y=df_sorted["observed"], mode="markers", name="Observed")
+        go.Scatter(
+            x=df_sorted["expected"],
+            y=df_sorted["observed"],
+            mode="markers",
+            name="Observed",
+        )
     )
     fig_qq.add_trace(
         go.Scatter(
@@ -68,7 +88,9 @@ def main() -> None:
     out_path_manhattan = os.path.join(
         args.out_dir, f"manhattan_{args.assoc}.{args.out_type}"
     )
-    out_path_qq = os.path.join(args.out_dir, f"qq_{args.assoc}.{args.out_type}")
+    out_path_qq = os.path.join(
+        args.out_dir, f"qq_{args.assoc}.{args.out_type}"
+    )
 
     if args.out_type.lower() == "png":
         fig_manhattan.write_image(out_path_manhattan)

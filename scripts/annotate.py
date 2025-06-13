@@ -25,8 +25,16 @@ def main() -> None:
         default="no",
         help="Was the analysis stratified",
     )
-    parser.add_argument("--assoc", required=True, help="Association variable name")
-    parser.add_argument("--out-type", default=".csv", help="Output file extension")
+    parser.add_argument(
+        "--assoc",
+        required=True,
+        help="Association variable name",
+    )
+    parser.add_argument(
+        "--out-type",
+        default=".csv",
+        help="Output file extension",
+    )
     parser.add_argument(
         "--anno-file",
         default="annotation_files/EPIC_hg38.tsv.gz",
