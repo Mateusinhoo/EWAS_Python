@@ -13,3 +13,36 @@ It includes scripts for:
 
 ```bash
 pip install -r requirements.txt
+```
+
+## Usage Examples
+
+Assuming your phenotype table (`pheno.csv`) and methylation matrix (`mvals.csv.gz`) are stored in the `data` directory:
+
+### Run EWAS
+```bash
+python scripts/ewas.py --pheno data/pheno.csv --methyl data/mvals.csv.gz --assoc BMI --out-dir output/ewas
+```
+
+### Stratify the data
+```bash
+python scripts/stratify.py --pheno data/pheno.csv --methyl data/mvals.csv.gz --stratify sex re --out-dir output/stratified
+```
+
+### Annotate EWAS results
+```bash
+python scripts/annotate.py --input-file output/ewas/ewas_results.csv --out-dir output/annotated --assoc BMI --stratified no
+```
+Annotation files such as `EPIC_hg38.tsv.gz` and `EPIC_snp_key.tsv.gz` are expected inside an `annotation_files` directory.
+
+### Create a BED file
+```bash
+python scripts/make_bed.py --results output/annotated/BMI_ewas_annotated_results.csv --assoc BMI --out-dir output/bed --p-threshold 1e-5
+```
+
+### Generate Manhattan and QQ plots
+```bash
+python scripts/plots.py --input-file output/annotated/BMI_ewas_annotated_results.csv --assoc BMI --out-dir output/plots
+```
+
+Results will be written to the paths supplied with `--out-dir`; the examples above place all output under the `output` directory.
