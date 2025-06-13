@@ -3,4 +3,3 @@ numpy
 plotly
 scipy
 statsmodels
-argparse

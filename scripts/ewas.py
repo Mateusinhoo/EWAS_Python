@@ -1,11 +1,16 @@
-# ewas.py - Python version of ewas.R
+"""Run a basic epigenome-wide association study (EWAS).
+
+This script mirrors the functionality of ``ewas.R`` using ``statsmodels`` to
+perform ordinary least squares regression for each CpG.
+"""
 
 import argparse
-import pandas as pd
-import numpy as np
-from statsmodels.api import OLS, add_constant
-from concurrent.futures import ProcessPoolExecutor
 import os
+from concurrent.futures import ProcessPoolExecutor
+
+import numpy as np
+import pandas as pd
+from statsmodels.api import OLS, add_constant
 
 # Parse arguments
 parser = argparse.ArgumentParser(description="Run EWAS analysis")
@@ -29,8 +34,11 @@ common_samples = pheno["sample_id"].isin(mvals.columns)
 pheno = pheno[common_samples].set_index("sample_id")
 mvals = mvals[pheno.index]
 
+
 # Define analysis function
 def analyze_cpg(cpg_id):
+    """Return association statistics for a single CpG."""
+
     y = mvals.loc[cpg_id]
     X = add_constant(pheno[[args.assoc]].astype(float))
     try:
@@ -38,10 +46,11 @@ def analyze_cpg(cpg_id):
         return {
             "CpG": cpg_id,
             "beta": model.params[args.assoc],
-            "pvalue": model.pvalues[args.assoc]
+            "pvalue": model.pvalues[args.assoc],
         }
     except Exception:
         return {"CpG": cpg_id, "beta": np.nan, "pvalue": np.nan}
+
 
 # Run analysis in chunks
 results = []
