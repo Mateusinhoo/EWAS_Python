@@ -47,5 +47,7 @@ python scripts/make_bed.py --results output/annotated/BMI_ewas_annotated_results
 ```bash
 python scripts/plots.py --input-file output/annotated/BMI_ewas_annotated_results.csv --assoc BMI --out-dir output/plots
 ```
+Use `--out-type png` to save the plots as PNG images instead of the default HTML.
+The option accepts either `html` or `png`.
 
 Results will be written to the paths supplied with `--out-dir`; the examples above place all output under the `output` directory.
