@@ -11,7 +11,6 @@ import numpy as np
 import pandas as pd
 from statsmodels.api import OLS, add_constant
 
-
 def main() -> None:
     """Entry point for command line execution."""
 
