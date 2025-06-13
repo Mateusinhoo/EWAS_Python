@@ -18,7 +18,9 @@ def main() -> None:
     parser.add_argument("--out-dir", required=True, help="Directory to save plots")
     parser.add_argument("--assoc", required=True, help="Association variable")
     parser.add_argument(
-        "--out-type", default="html", help="Plot file extension (html or png)"
+        "--out-type",
+        default="html",
+        help="Plot file extension (html or png)",
     )
     args = parser.parse_args()
 
@@ -63,8 +65,17 @@ def main() -> None:
     )
 
     os.makedirs(args.out_dir, exist_ok=True)
-    fig_manhattan.write_html(os.path.join(args.out_dir, f"manhattan_{args.assoc}.{args.out_type}"))
-    fig_qq.write_html(os.path.join(args.out_dir, f"qq_{args.assoc}.{args.out_type}"))
+    out_path_manhattan = os.path.join(
+        args.out_dir, f"manhattan_{args.assoc}.{args.out_type}"
+    )
+    out_path_qq = os.path.join(args.out_dir, f"qq_{args.assoc}.{args.out_type}")
+
+    if args.out_type.lower() == "png":
+        fig_manhattan.write_image(out_path_manhattan)
+        fig_qq.write_image(out_path_qq)
+    else:
+        fig_manhattan.write_html(out_path_manhattan)
+        fig_qq.write_html(out_path_qq)
 
     print(f"Saved Manhattan and QQ plots to {args.out_dir}")
 
