@@ -56,6 +56,18 @@ python scripts/stratify.py --pheno data/pheno.csv --methyl data/mvals.csv.gz --s
 ```
 If your phenotype table uses another sample column, specify it with `--sample-id-col`.
 
+`stratify.py` expects samples as columns in the methylation matrix. If your
+matrix has samples on the rows, transpose it first. The following example uses
+pandas and removes the need for the external `csvtool` utility:
+
+```bash
+gunzip -c data/mvals.csv.gz | python - <<'EOF'
+import pandas as pd, sys
+df = pd.read_csv(sys.stdin, index_col=0)
+df.T.to_csv("data/mvals_t.csv")
+EOF
+```
+
 ### Annotate EWAS results
 ```bash
 python scripts/annotate.py --input-file output/ewas/ewas_results.csv --out-dir output/annotated --assoc BMI --stratified no
